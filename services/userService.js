@@ -109,9 +109,123 @@ const updateUser = (userData) => {
     });
 };
 
+// HOME FUNCTIONS //
+
+const addHouse = (houseData) => {
+    return new Promise((resolve, reject) => {
+        const query = `INSERT INTO homes (UserID, Address) VALUES (?, ?)`;
+        const params = [houseData.UserID, houseData.Address];
+
+        db.run(query, params, function(err) {
+            if (err) {
+                console.error('Error adding house:', err.message);
+                reject(err);
+            } else {
+                resolve({
+                    status: 200,
+                    response: {
+                        message: "Successfully added House",
+                        data: {
+                            id: this.lastID
+                        }
+                    }
+                });
+            }
+        });
+    });
+};
+
+const getHomesByUser = (houseData) => {
+    return new Promise((resolve, reject) => {
+      const query = `SELECT * FROM homes WHERE UserID = ?`;
+      db.all(query, [houseData.UserID], (err, rows) => {
+        if (err) {
+          console.error('Error fetching user homes:', err.message);
+          reject(err);
+        } else {
+          resolve({
+            status: 200,
+            response: {
+              message: "Successfully fetched all houses for user.",
+              data: rows
+            }
+        });
+        }
+      });
+    });
+  };
+
+
+  const deleteHouse = (houseData) => {
+    return new Promise((resolve, reject) => {
+        const query = `DELETE FROM homes WHERE HouseID = ?`;
+        db.run(query, [houseData.HouseID], function(err) {
+            if (err) {
+                console.error('Error deleting house:', err.message);
+                reject(err);
+            } else if (this.changes === 0) {
+                // If no rows were affected, the user doesn't exist
+                resolve({
+                    status: 404,
+                    response: {
+                        message: "House not found"
+                    }
+                });
+            } else {
+                resolve({
+                    status: 200,
+                    response: {
+                        message: "Successfully deleted House",
+                        data: { "HouseID": houseData.HouseID }
+                    }
+                });
+            }
+        });
+    });
+};
+
+const updateHouse = (houseData) => {
+    return new Promise((resolve, reject) => {
+        const query = `UPDATE homes SET Address = ? WHERE HouseID = ?`;
+        const params = [houseData.Address, houseData.HouseID];
+
+        db.run(query, params, function(err) {
+            if (err) {
+                console.error('Error updating house:', err.message);
+                reject(err);
+            } else if (this.changes === 0) {
+                resolve({
+                    status: 404,
+                    response: {
+                        message: "House not found",
+                        data: { HouseID: houseData.HouseID }
+                    }
+                });
+            } else {
+                resolve({
+                    status: 200,
+                    response: {
+                        message: "Successfully updated House",
+                        data: { 
+                            HouseID: houseData.HouseID,
+                            Address: houseData.Address
+                         }
+                    }
+                });
+            }
+        });
+    });
+};
+
+// Room Functions //
+
 module.exports = {
     addUser,
     getAllUsers,
     deleteUser,
-    updateUser
+    updateUser,
+    addHouse,
+    getHomesByUser,
+    deleteHouse,
+    updateHouse
 }

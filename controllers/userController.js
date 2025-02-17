@@ -40,10 +40,56 @@ const updateUser = async (req, res) => {
     }
 }
 
+// HOUSE FUNCTIONS //
+
+const addHouse = async (req, res) => {
+    try {
+        const result = await userService.addHouse(req.body);
+        res.status(result.status).json({ response: result.response });
+        console.log(result.response.message);
+    } catch (error) {
+        res.status(500).json({message: 'Error adding house', error: error.message});
+    }
+}
+
+const getHomesByUser = async (req, res) => {
+    try {
+        const result = await userService.getHomesByUser(req.body);
+        res.status(result.status).json({ response: result.response });
+        console.log(result.response.message);
+    } catch (error) {
+        res.status(500).json({message: 'Error getting user homes', error: error.message});
+    }
+}
+
+const deleteHouse = async (req, res) => {
+    try {
+        const result = await userService.deleteHouse(req.body);
+        res.status(result.status).json({ response: result.response });
+        console.log(result.response.message);
+    } catch (error) {
+        res.status(500).json({message: 'Error deleting house', error: error.message});
+    }
+}
+
+const updateHouse = async (req, res) => {
+    try {
+        const result = await userService.updateHouse(req.body);
+        res.status(result.status).json({ response: result.response });
+        console.log(result.response.message);
+    } catch (error) {
+        res.status(500).json({message: 'Error updating house', error: error.message});
+    }
+}
+
 
 module.exports = {
     addUser,
     getAllUsers,
     deleteUser,
-    updateUser
+    updateUser,
+    addHouse,
+    getHomesByUser,
+    deleteHouse,
+    updateHouse
 }
