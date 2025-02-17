@@ -9,9 +9,10 @@ app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 const userRoutes = require('../routes/userRoutes');
-
+const deviceRoutes = require('../routes/deviceRoutes')
 
 app.use('/api/users', userRoutes);
+app.use('/api/devices', deviceRoutes)
 
 app.get('/', (req, res) => {
     res.send('Hello, your server is running!');
