@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "start": "node config/server.js"
+    "start": "node config/server.js",
+    "test": "jest"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -8,5 +9,9 @@
     "http": "^0.0.1-security",
     "path": "^0.12.7",
     "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
   }
 }
