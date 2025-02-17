@@ -82,6 +82,46 @@ const updateHouse = async (req, res) => {
     }
 }
 
+const addRoom = async (req, res) => {
+    try {
+        const result = await userService.addRoom(req.body);
+        res.status(result.status).json({ response: result.response });
+        console.log(result.response.message);
+    } catch (error) {
+        res.status(500).json({message: 'Error adding room', error: error.message});
+    }
+}
+
+const getRoomsByHouse = async (req, res) => {
+    try {
+        const result = await userService.getRoomsByHouse(req.body);
+        res.status(result.status).json({ response: result.response });
+        console.log(result.response.message);
+    } catch (error) {
+        res.status(500).json({message: 'Error getting rooms for house', error: error.message});
+    }
+}
+
+const updateRoom = async (req, res) => {
+    try {
+        const result = await userService.updateRoom(req.body);
+        res.status(result.status).json({ response: result.response });
+        console.log(result.response.message);
+    } catch (error) {
+        res.status(500).json({message: 'Error updating room', error: error.message});
+    }
+}
+
+const deleteRoom = async (req, res) => {
+    try {
+        const result = await userService.deleteRoom(req.body);
+        res.status(result.status).json({ response: result.response });
+        console.log(result.response.message);
+    } catch (error) {
+        res.status(500).json({message: 'Error deleting room', error: error.message});
+    }
+}
+
 
 module.exports = {
     addUser,
@@ -91,5 +131,9 @@ module.exports = {
     addHouse,
     getHomesByUser,
     deleteHouse,
-    updateHouse
+    updateHouse,
+    addRoom,
+    getRoomsByHouse,
+    updateRoom,
+    deleteRoom
 }

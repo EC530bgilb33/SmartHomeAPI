@@ -14,5 +14,12 @@ router.get('/getHomesByUser', userController.getHomesByUser);
 router.delete('/deleteHouse', userController.deleteHouse);
 router.put('/updateHouse', userController.updateHouse);
 
+// ROOM ROUTES //
+
+router.post('/addRoom', userController.addRoom);
+router.get('/getRoomsByHouse', userController.getRoomsByHouse);
+router.delete('/deleteRoom', userController.deleteRoom);
+router.put('/updateRoom', userController.updateRoom);
+
 
 module.exports = router;

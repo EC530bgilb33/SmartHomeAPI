@@ -164,7 +164,7 @@ const getHomesByUser = (houseData) => {
                 console.error('Error deleting house:', err.message);
                 reject(err);
             } else if (this.changes === 0) {
-                // If no rows were affected, the user doesn't exist
+                // If no rows were affected, the house doesn't exist
                 resolve({
                     status: 404,
                     response: {
@@ -219,6 +219,111 @@ const updateHouse = (houseData) => {
 
 // Room Functions //
 
+const addRoom = (roomData) => {
+    return new Promise((resolve, reject) => {
+        const query = `INSERT INTO rooms (HouseID, RoomType) VALUES (?, ?)`;
+        const params = [roomData.HouseID, roomData.RoomType];
+
+        db.run(query, params, function(err) {
+            if (err) {
+                console.error('Error adding room:', err.message);
+                reject(err);
+            } else {
+                resolve({
+                    status: 200,
+                    response: {
+                        message: "Successfully added Room",
+                        data: {
+                            id: this.lastID
+                        }
+                    }
+                });
+            }
+        });
+    });
+};
+
+const getRoomsByHouse = (roomData) => {
+    return new Promise((resolve, reject) => {
+      const query = `SELECT * FROM rooms WHERE HouseID = ?`;
+      db.all(query, [roomData.HouseID], (err, rows) => {
+        if (err) {
+          console.error('Error fetching house rooms:', err.message);
+          reject(err);
+        } else {
+          resolve({
+            status: 200,
+            response: {
+              message: "Successfully fetched all rooms for house.",
+              data: rows
+            }
+        });
+        }
+      });
+    });
+  };
+
+  const updateRoom = (roomData) => {
+    return new Promise((resolve, reject) => {
+        const query = `UPDATE rooms SET RoomType = ? WHERE RoomID = ?`;
+        const params = [roomData.RoomType, roomData.RoomID];
+
+        db.run(query, params, function(err) {
+            if (err) {
+                console.error('Error updating room:', err.message);
+                reject(err);
+            } else if (this.changes === 0) {
+                resolve({
+                    status: 404,
+                    response: {
+                        message: "Room not found",
+                        data: { RoomID: roomData.RoomID }
+                    }
+                });
+            } else {
+                resolve({
+                    status: 200,
+                    response: {
+                        message: "Successfully updated Room",
+                        data: { 
+                            RoomID: roomData.RoomID,
+                            RoomType: roomData.RoomType
+                         }
+                    }
+                });
+            }
+        });
+    });
+};  
+
+const deleteRoom = (roomData) => {
+    return new Promise((resolve, reject) => {
+        const query = `DELETE FROM rooms WHERE RoomID = ?`;
+        db.run(query, [roomData.RoomID], function(err) {
+            if (err) {
+                console.error('Error deleting room:', err.message);
+                reject(err);
+            } else if (this.changes === 0) {
+                // If no rows were affected, the room doesn't exist
+                resolve({
+                    status: 404,
+                    response: {
+                        message: "Room not found"
+                    }
+                });
+            } else {
+                resolve({
+                    status: 200,
+                    response: {
+                        message: "Successfully deleted Room",
+                        data: { "RoomID": roomData.RoomID }
+                    }
+                });
+            }
+        });
+    });
+};
+
 module.exports = {
     addUser,
     getAllUsers,
@@ -227,5 +332,9 @@ module.exports = {
     addHouse,
     getHomesByUser,
     deleteHouse,
-    updateHouse
+    updateHouse,
+    addRoom,
+    getRoomsByHouse,
+    updateRoom,
+    deleteRoom
 }
