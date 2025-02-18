@@ -1,0 +1,35 @@
+name: Run Tests
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 10
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Set Up SQLite Database
+        run: |
+          mkdir -p data
+          touch data/test.db  # Creates a test database file
+
+      - name: Run Tests
+        run: npm test
