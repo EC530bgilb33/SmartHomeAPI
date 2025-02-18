@@ -6,7 +6,7 @@ const addDevice = async (req, res) => {
         res.status(result.status).json({ response: result.response });
         console.log(result.response.message);
     } catch (error) {
-        res.status(500).json({message: 'Error adding device', error: error.message});
+        res.status(result.status).json({response: result.response});
     }
 }
 
@@ -16,11 +16,33 @@ const getDevicesByUser = async (req, res) => {
         res.status(result.status).json({ response: result.response });
         console.log(result.response.message);
     } catch (error) {
-        res.status(500).json({message: 'Error getting user devices', error: error.message});
+        res.status(result.status).json({response: result.response});
+    }
+}
+
+const updateDevice = async (req, res) => {
+    try {
+        const result = await deviceService.updateDevice(req.body);
+        res.status(result.status).json({ response: result.response });
+        console.log(result.response.message);
+    } catch (error) {
+        res.status(result.status).json({response: result.response});
+    }
+}
+
+const deleteDevice = async (req, res) => {
+    try {
+        const result = await deviceService.deleteDevice(req.body);
+        res.status(result.status).json({ response: result.response });
+        console.log(result.response.message);
+    } catch (error) {
+        res.status(result.status).json({response: result.response});
     }
 }
 
 module.exports = {
     addDevice,
-    getDevicesByUser
+    getDevicesByUser,
+    updateDevice,
+    deleteDevice
 }

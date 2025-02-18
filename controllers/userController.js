@@ -6,7 +6,7 @@ const addUser = async (req, res) => {
         res.status(result.status).json({ response: result.response });
         console.log(result.response.message);
     } catch (error) {
-        res.status(500).json({message: 'Error adding user', error: error.message});
+        res.status(result.status).json({response: result.response});
     }
 }
 
@@ -16,7 +16,7 @@ const getAllUsers = async (req, res) => {
         res.status(result.status).json({ response: result.response });
         console.log(result.response.message);
     } catch (error) {
-        res.status(500).json({message: 'Error getting all users', error: error.message});
+        res.status(result.status).json({response: result.response});
     }
 }
 
@@ -26,7 +26,7 @@ const deleteUser = async (req, res) => {
         res.status(result.status).json({ response: result.response });
         console.log(result.response.message);
     } catch (error) {
-        res.status(500).json({message: 'Error deleting user', error: error.message});
+        res.status(result.status).json({response: result.response});
     }
 }
 
@@ -36,7 +36,7 @@ const updateUser = async (req, res) => {
         res.status(result.status).json({ response: result.response });
         console.log(result.response.message);
     } catch (error) {
-        res.status(500).json({message: 'Error updating user', error: error.message});
+        res.status(result.status).json({response: result.response});
     }
 }
 
@@ -48,7 +48,7 @@ const addHouse = async (req, res) => {
         res.status(result.status).json({ response: result.response });
         console.log(result.response.message);
     } catch (error) {
-        res.status(500).json({message: 'Error adding house', error: error.message});
+        res.status(result.status).json({response: result.response});
     }
 }
 
@@ -58,7 +58,7 @@ const getHomesByUser = async (req, res) => {
         res.status(result.status).json({ response: result.response });
         console.log(result.response.message);
     } catch (error) {
-        res.status(500).json({message: 'Error getting user homes', error: error.message});
+        res.status(result.status).json({response: result.response});
     }
 }
 
@@ -68,7 +68,7 @@ const deleteHouse = async (req, res) => {
         res.status(result.status).json({ response: result.response });
         console.log(result.response.message);
     } catch (error) {
-        res.status(500).json({message: 'Error deleting house', error: error.message});
+        res.status(result.status).json({response: result.response});
     }
 }
 
@@ -78,7 +78,7 @@ const updateHouse = async (req, res) => {
         res.status(result.status).json({ response: result.response });
         console.log(result.response.message);
     } catch (error) {
-        res.status(500).json({message: 'Error updating house', error: error.message});
+        res.status(result.status).json({response: result.response});
     }
 }
 
@@ -88,7 +88,7 @@ const addRoom = async (req, res) => {
         res.status(result.status).json({ response: result.response });
         console.log(result.response.message);
     } catch (error) {
-        res.status(500).json({message: 'Error adding room', error: error.message});
+        res.status(result.status).json({response: result.response});
     }
 }
 
@@ -98,7 +98,7 @@ const getRoomsByHouse = async (req, res) => {
         res.status(result.status).json({ response: result.response });
         console.log(result.response.message);
     } catch (error) {
-        res.status(500).json({message: 'Error getting rooms for house', error: error.message});
+        res.status(result.status).json({response: result.response});
     }
 }
 
@@ -108,7 +108,7 @@ const updateRoom = async (req, res) => {
         res.status(result.status).json({ response: result.response });
         console.log(result.response.message);
     } catch (error) {
-        res.status(500).json({message: 'Error updating room', error: error.message});
+        res.status(result.status).json({response: result.response});
     }
 }
 
@@ -118,7 +118,7 @@ const deleteRoom = async (req, res) => {
         res.status(result.status).json({ response: result.response });
         console.log(result.response.message);
     } catch (error) {
-        res.status(500).json({message: 'Error deleting room', error: error.message});
+        res.status(result.status).json({response: result.response});
     }
 }
 

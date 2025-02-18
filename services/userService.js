@@ -2,36 +2,55 @@ const db = require('../config/db')
 
 const addUser = (userData) => {
     return new Promise((resolve, reject) => {
-        const query = `INSERT INTO users (Name, Email, Password) VALUES (?, ?, ?)`;
+
+        if (!userData.Name || !userData.Email || !userData.Password) {
+            return reject({
+                status: 400,
+                response: {
+                    message: "Error adding user",
+                    error: "Missing input"
+                }
+            })
+        }
+
+        const query = "INSERT INTO users (Name, Email, Password) VALUES (?, ?, ?)";
         const params = [userData.Name, userData.Email, userData.Password];
+
 
         db.run(query, params, function(err) {
             if (err) {
-                console.error('Error adding user:', err.message);
-                reject(err);
-            }
-            else {
-                resolve({
-                    status: 200,
+                return reject({
+                    status: 500,
                     response: {
-                        message: "Successfully added User",
-                        data: {
-                            id: this.lastID
-                        }
+                        message: "Error adding user",
+                        error: err.message
                     }
                 });
             }
+            resolve({
+                status: 200,
+                response: {
+                    message: "Successfully added User",
+                    data: { id: this.lastID }
+                }
+            });
         });
     });
 };
+
 
 const getAllUsers = () => {
     return new Promise((resolve, reject) => {
       const query = `SELECT * FROM users`;
       db.all(query, [], (err, rows) => {
         if (err) {
-          console.error('Error fetching users:', err.message);
-          reject(err);
+            reject({
+                status: 500,
+                response: {
+                    message: "Error fetching users",
+                    error: err.message
+                }
+            });
         } else {
           resolve({
             status: 200,
@@ -51,14 +70,20 @@ const deleteUser = (userData) => {
         const query = `DELETE FROM users WHERE UserID = ?`;
         db.run(query, [userData.userID], function(err) {
             if (err) {
-                console.error('Error deleting user:', err.message);
-                reject(err);
+                reject({
+                    status: 500,
+                    response: {
+                        message: "Error deleting user",
+                        error: err.message
+                    }
+                });
             } else if (this.changes === 0) {
                 // If no rows were affected, the user doesn't exist
                 resolve({
                     status: 404,
                     response: {
-                        message: "User not found"
+                        message: "Error deleting user",
+                        error: "User not found"
                     }
                 });
             } else {
@@ -81,8 +106,13 @@ const updateUser = (userData) => {
 
         db.run(query, params, function(err) {
             if (err) {
-                console.error('Error updating user:', err.message);
-                reject(err);
+                reject({
+                    status: 500,
+                    response: {
+                        message: "Error deleting user",
+                        error: err.message
+                    }
+                });
             } else if (this.changes === 0) {
                 resolve({
                     status: 404,
@@ -97,7 +127,7 @@ const updateUser = (userData) => {
                     response: {
                         message: "Successfully updated User",
                         data: { 
-                            userID: userData.userID,
+                            UserID: userData.userID,
                             Name: userData.Name,
                             Email: userData.Email,
                             Password: userData.Password
@@ -113,13 +143,29 @@ const updateUser = (userData) => {
 
 const addHouse = (houseData) => {
     return new Promise((resolve, reject) => {
+
+        if (!houseData.UserID || !houseData.Address) {
+            return reject({
+                status: 400,
+                response: {
+                    message: "Error adding house",
+                    error: "Missing input"
+                }
+            })
+        }
+
         const query = `INSERT INTO homes (UserID, Address) VALUES (?, ?)`;
         const params = [houseData.UserID, houseData.Address];
 
         db.run(query, params, function(err) {
             if (err) {
-                console.error('Error adding house:', err.message);
-                reject(err);
+                return reject({
+                    status: 500,
+                    response: {
+                        message: "Error adding house",
+                        error: err.message
+                    }
+                });
             } else {
                 resolve({
                     status: 200,
@@ -140,8 +186,13 @@ const getHomesByUser = (houseData) => {
       const query = `SELECT * FROM homes WHERE UserID = ?`;
       db.all(query, [houseData.UserID], (err, rows) => {
         if (err) {
-          console.error('Error fetching user homes:', err.message);
-          reject(err);
+            return reject({
+                status: 500,
+                response: {
+                    message: "Error fetching homes",
+                    error: err.message
+                }
+            });
         } else {
           resolve({
             status: 200,
@@ -161,14 +212,20 @@ const getHomesByUser = (houseData) => {
         const query = `DELETE FROM homes WHERE HouseID = ?`;
         db.run(query, [houseData.HouseID], function(err) {
             if (err) {
-                console.error('Error deleting house:', err.message);
-                reject(err);
+                return reject({
+                    status: 500,
+                    response: {
+                        message: "Error deleting house",
+                        error: err.message
+                    }
+                });
             } else if (this.changes === 0) {
                 // If no rows were affected, the house doesn't exist
                 resolve({
                     status: 404,
                     response: {
-                        message: "House not found"
+                        message: "Error deleting house",
+                        error: "House does not exist"
                     }
                 });
             } else {
@@ -186,19 +243,25 @@ const getHomesByUser = (houseData) => {
 
 const updateHouse = (houseData) => {
     return new Promise((resolve, reject) => {
+        
         const query = `UPDATE homes SET Address = ? WHERE HouseID = ?`;
         const params = [houseData.Address, houseData.HouseID];
 
         db.run(query, params, function(err) {
             if (err) {
-                console.error('Error updating house:', err.message);
-                reject(err);
+                return reject({
+                    status: 500,
+                    response: {
+                        message: "Error deleting house",
+                        error: err.message
+                    }
+                });
             } else if (this.changes === 0) {
                 resolve({
                     status: 404,
                     response: {
-                        message: "House not found",
-                        data: { HouseID: houseData.HouseID }
+                        message: "Error updating house",
+                        error: "House does not exist"
                     }
                 });
             } else {
@@ -221,13 +284,31 @@ const updateHouse = (houseData) => {
 
 const addRoom = (roomData) => {
     return new Promise((resolve, reject) => {
+
+        if (!roomData.HouseID || !roomData.RoomType) {
+            return reject({
+                status: 400,
+                response: {
+                    message: "Error adding room",
+                    error: "Missing input"
+                }
+            })
+        }
+
         const query = `INSERT INTO rooms (HouseID, RoomType) VALUES (?, ?)`;
         const params = [roomData.HouseID, roomData.RoomType];
 
         db.run(query, params, function(err) {
             if (err) {
-                console.error('Error adding room:', err.message);
-                reject(err);
+                if (err) {
+                    return reject({
+                        status: 500,
+                        response: {
+                            message: "Error adding room",
+                            error: err.message
+                        }
+                    });
+                }
             } else {
                 resolve({
                     status: 200,
@@ -248,8 +329,15 @@ const getRoomsByHouse = (roomData) => {
       const query = `SELECT * FROM rooms WHERE HouseID = ?`;
       db.all(query, [roomData.HouseID], (err, rows) => {
         if (err) {
-          console.error('Error fetching house rooms:', err.message);
-          reject(err);
+            if (err) {
+                return reject({
+                    status: 500,
+                    response: {
+                        message: "Error fetching rooms",
+                        error: err.message
+                    }
+                });
+            }
         } else {
           resolve({
             status: 200,
@@ -270,14 +358,21 @@ const getRoomsByHouse = (roomData) => {
 
         db.run(query, params, function(err) {
             if (err) {
-                console.error('Error updating room:', err.message);
-                reject(err);
+                if (err) {
+                    return reject({
+                        status: 500,
+                        response: {
+                            message: "Error updating room",
+                            error: err.message
+                        }
+                    });
+                }
             } else if (this.changes === 0) {
                 resolve({
                     status: 404,
                     response: {
-                        message: "Room not found",
-                        data: { RoomID: roomData.RoomID }
+                        message: "Error updating room",
+                        error: "Room does not exist"
                     }
                 });
             } else {
@@ -301,14 +396,22 @@ const deleteRoom = (roomData) => {
         const query = `DELETE FROM rooms WHERE RoomID = ?`;
         db.run(query, [roomData.RoomID], function(err) {
             if (err) {
-                console.error('Error deleting room:', err.message);
-                reject(err);
+                if (err) {
+                    return reject({
+                        status: 500,
+                        response: {
+                            message: "Error deleting room",
+                            error: err.message
+                        }
+                    });
+                }
             } else if (this.changes === 0) {
                 // If no rows were affected, the room doesn't exist
                 resolve({
                     status: 404,
                     response: {
-                        message: "Room not found"
+                        message: "Error deleting room",
+                        error: "Room does not exist"
                     }
                 });
             } else {

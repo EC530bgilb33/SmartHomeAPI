@@ -2,13 +2,29 @@ const db = require('../config/db')
 
 const addDevice = (deviceData) => {
     return new Promise((resolve, reject) => {
+
+        if (!deviceData.RoomID || !deviceData.DeviceType) {
+            return reject({
+                status: 400,
+                response: {
+                    message: "Error adding device",
+                    error: "Missing input"
+                }
+            })
+        }
+
         const query = `INSERT INTO devices (RoomID, DeviceType) VALUES (?, ?)`;
         const params = [deviceData.RoomID, deviceData.DeviceType];
 
         db.run(query, params, function(err) {
             if (err) {
-                console.error('Error adding device:', err.message);
-                reject(err);
+                return reject({
+                    status: 500,
+                    response: {
+                        message: "Error adding device",
+                        error: err.message
+                    }
+                });
             } else {
                 resolve({
                     status: 200,
@@ -39,8 +55,13 @@ const getDevicesByUser = (deviceData) => {
         
         db.all(query, [deviceData.UserID], (err, rows) => {
             if (err) {
-                console.error('Error fetching user devices:', err.message);
-                reject(err);
+                return reject({
+                    status: 500,
+                    response: {
+                        message: "Error fetching devices",
+                        error: err.message
+                    }
+                });
             } else {
                 resolve({
                     status: 200,
@@ -54,7 +75,84 @@ const getDevicesByUser = (deviceData) => {
     });
 };
 
+const updateDevice = (deviceData) => {
+    return new Promise((resolve, reject) => {
+        const query = `UPDATE devices SET DeviceType = ? WHERE DeviceID = ?`;
+        const params = [deviceData.DeviceType, deviceData.DeviceID];
+
+        db.run(query, params, function(err) {
+            if (err) {
+                if (err) {
+                    return reject({
+                        status: 500,
+                        response: {
+                            message: "Error updating device",
+                            error: err.message
+                        }
+                    });
+                }
+            } else if (this.changes === 0) {
+                resolve({
+                    status: 404,
+                    response: {
+                        message: "Error updating device",
+                        error: "Device does not exist"
+                    }
+                });
+            } else {
+                resolve({
+                    status: 200,
+                    response: {
+                        message: "Successfully updated device",
+                        data: { 
+                            DeviceID: deviceData.DeviceID,
+                            DeviceType: deviceData.DeviceType
+                         }
+                    }
+                });
+            }
+        });
+    });
+}; 
+
+const deleteDevice = (deviceData) => {
+    return new Promise((resolve, reject) => {
+        const query = `DELETE FROM devices WHERE DeviceID = ?`;
+        db.run(query, [deviceData.DeviceID], function(err) {
+            if (err) {
+                if (err) {
+                    return reject({
+                        status: 500,
+                        response: {
+                            message: "Error deleting device",
+                            error: err.message
+                        }
+                    });
+                }
+            } else if (this.changes === 0) {
+                resolve({
+                    status: 404,
+                    response: {
+                        message: "Error deleting device",
+                        error: "Device does not exist"
+                    }
+                });
+            } else {
+                resolve({
+                    status: 200,
+                    response: {
+                        message: "Successfully deleted device",
+                        data: { "DeviceID": deviceData.DeviceID }
+                    }
+                });
+            }
+        });
+    });
+};
+
 module.exports = {
     addDevice,
-    getDevicesByUser
+    getDevicesByUser,
+    updateDevice,
+    deleteDevice
 }
